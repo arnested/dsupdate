@@ -1,0 +1,23 @@
+language: go
+
+go:
+  - '1.11'
+
+go_import_path: arnested.dk/go/dsupdate
+
+before_install:
+  - go get github.com/frapposelli/wwhrd
+  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+
+before_script:
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
+script:
+  - dep check
+  - wwhrd check
+  - go test -v -race -coverprofile c.out ./...
+
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
