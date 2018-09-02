@@ -12,7 +12,10 @@
 --
     import "arnested.dk/go/dsupdate"
 
-Package dsupdate lorem ipsum ...
+Package dsupdate is a library for updating DS records with DK Hostmasters
+propritary DS Upload protocol.
+
+It is work in progress.
 
 ## Usage
 
