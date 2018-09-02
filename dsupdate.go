@@ -1,27 +1,35 @@
 package dsupdate /* import "arnested.dk/go/dsupdate" */
 
-import "github.com/miekg/dns"
+import (
+	"errors"
+
+	"github.com/miekg/dns"
+)
 
 type DsUpdate struct {
-	userId   string
-	password string
-	domain   string
-	dsRecord dns.DS
+	userID    string
+	password  string
+	domain    string
+	dsRecords []dns.DS
 }
 
 func NewDsUpdate(options ...func(*DsUpdate) error) (*DsUpdate, error) {
 	dsu := DsUpdate{}
 
 	for _, option := range options {
-		option(&dsu)
+		err := option(&dsu)
+
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &dsu, nil
 }
 
-func UserId(userId string) func(*DsUpdate) error {
+func UserID(userID string) func(*DsUpdate) error {
 	return func(dsu *DsUpdate) error {
-		return dsu.setUserId(userId)
+		return dsu.setUserID(userID)
 	}
 }
 
@@ -37,8 +45,14 @@ func Domain(domain string) func(*DsUpdate) error {
 	}
 }
 
-func (dsu *DsUpdate) setUserId(userId string) error {
-	dsu.userId = userId
+func DS(dsRecords ...dns.DS) func(*DsUpdate) error {
+	return func(dsu *DsUpdate) error {
+		return dsu.setDsRecords(dsRecords)
+	}
+}
+
+func (dsu *DsUpdate) setUserID(userID string) error {
+	dsu.userID = userID
 
 	return nil
 }
@@ -51,6 +65,16 @@ func (dsu *DsUpdate) setPassword(password string) error {
 
 func (dsu *DsUpdate) setDomain(domain string) error {
 	dsu.domain = domain
+
+	return nil
+}
+
+func (dsu *DsUpdate) setDsRecords(dsRecords []dns.DS) error {
+	if len(dsRecords) > 5 {
+		return errors.New("Max 5")
+	}
+
+	dsu.dsRecords = dsRecords
 
 	return nil
 }

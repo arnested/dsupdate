@@ -2,26 +2,36 @@ package dsupdate /* import "arnested.dk/go/dsupdate" */
 
 import (
 	"testing"
+
+	"github.com/miekg/dns"
 )
 
 func TestNewDsUpdate(t *testing.T) {
-	dsu, _ := NewDsUpdate()
+	_, err := NewDsUpdate()
 
-	if (*dsu != DsUpdate{}) {
-		t.Errorf("NewDsUpdate() without options does not return a pointer to a zero value DsUpdate")
+	if err != nil {
+		t.Error(err)
 	}
 }
 
-func TestNewDsUpdateWithUserId(t *testing.T) {
-	dsu, _ := NewDsUpdate(UserId("foo"))
+func TestNewDsUpdateWithUserID(t *testing.T) {
+	dsu, err := NewDsUpdate(UserID("foo"))
 
-	if dsu.userId != "foo" {
+	if err != nil {
+		t.Error(err)
+	}
+
+	if dsu.userID != "foo" {
 		t.Errorf("Could not initialize with setting user ID")
 	}
 }
 
 func TestNewDsUpdateWithPassword(t *testing.T) {
-	dsu, _ := NewDsUpdate(Password("bar"))
+	dsu, err := NewDsUpdate(Password("bar"))
+
+	if err != nil {
+		t.Error(err)
+	}
 
 	if dsu.password != "bar" {
 		t.Errorf("Could not initialize with setting password")
@@ -29,7 +39,11 @@ func TestNewDsUpdateWithPassword(t *testing.T) {
 }
 
 func TestNewDsUpdateWithDomain(t *testing.T) {
-	dsu, _ := NewDsUpdate(Domain("eksempel.dk"))
+	dsu, err := NewDsUpdate(Domain("eksempel.dk"))
+
+	if err != nil {
+		t.Error(err)
+	}
 
 	if dsu.domain != "eksempel.dk" {
 		t.Errorf("Could not initialize with setting domain")
@@ -37,9 +51,13 @@ func TestNewDsUpdateWithDomain(t *testing.T) {
 }
 
 func TestNewDsUpdateWithMultipleOptions(t *testing.T) {
-	dsu, _ := NewDsUpdate(UserId("foo"), Password("bar"), Domain("eksempel.dk"))
+	dsu, err := NewDsUpdate(UserID("foo"), Password("bar"), Domain("eksempel.dk"))
 
-	if dsu.userId != "foo" {
+	if err != nil {
+		t.Error(err)
+	}
+
+	if dsu.userID != "foo" {
 		t.Errorf("Could not initialize with setting user ID")
 	}
 
@@ -52,9 +70,13 @@ func TestNewDsUpdateWithMultipleOptions(t *testing.T) {
 	}
 
 	// Options should be able to be specified in random order.
-	dsu2, _ := NewDsUpdate(UserId("foo"), Domain("eksempel.dk"), Password("bar"))
+	dsu2, err := NewDsUpdate(UserID("foo"), Domain("eksempel.dk"), Password("bar"))
 
-	if dsu2.userId != "foo" {
+	if err != nil {
+		t.Error(err)
+	}
+
+	if dsu2.userID != "foo" {
 		t.Errorf("Could not initialize with setting user ID")
 	}
 
@@ -64,5 +86,69 @@ func TestNewDsUpdateWithMultipleOptions(t *testing.T) {
 
 	if dsu2.domain != "eksempel.dk" {
 		t.Errorf("Could not initialize with setting domain")
+	}
+}
+
+func TestNewDsUpdateWithDsRecords(t *testing.T) {
+	dsu, err := NewDsUpdate(DS(
+		dns.DS{},
+		dns.DS{},
+		dns.DS{},
+		dns.DS{},
+	))
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if len(dsu.dsRecords) != 4 {
+		t.Errorf("Could not initialize with setting 4 DS records")
+	}
+}
+
+func TestNewDsUpdateWithDsRecordsAsSlice(t *testing.T) {
+	dsu, err := NewDsUpdate(DS([]dns.DS{
+		dns.DS{},
+		dns.DS{},
+		dns.DS{},
+		dns.DS{},
+	}...))
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	if len(dsu.dsRecords) != 4 {
+		t.Errorf("Could not initialize with setting 4 DS records")
+	}
+}
+
+func TestNewDsUpdateWithTooManyDsRecordsAsSlice(t *testing.T) {
+	_, err := NewDsUpdate(DS([]dns.DS{
+		dns.DS{},
+		dns.DS{},
+		dns.DS{},
+		dns.DS{},
+		dns.DS{},
+		dns.DS{},
+	}...))
+
+	if err == nil {
+		t.Errorf("Did not fail as expected when trying to set 6 DS records")
+	}
+}
+
+func TestNewDsUpdateWithTooManyDsRecords(t *testing.T) {
+	_, err := NewDsUpdate(DS(
+		dns.DS{},
+		dns.DS{},
+		dns.DS{},
+		dns.DS{},
+		dns.DS{},
+		dns.DS{},
+	))
+
+	if err == nil {
+		t.Errorf("Did not fail as expected when trying to set more than 5 DS records")
 	}
 }

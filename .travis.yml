@@ -17,7 +17,15 @@ before_script:
 script:
   - dep check
   - wwhrd check
-  - go test -v -race -coverprofile c.out ./...
+  - go test -race -coverprofile c.out ./...
 
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+
+deploy:
+  # Refresh godoc.org documentation
+  - provider: script
+    script: 'curl --silent -X POST -H "Content-Type: application/x-www-form-urlencoded" https://godoc.org/-/refresh --data "path=arnested.dk%2Fgo%2Fdsupdate"'
+    on:
+      repo: arnested/go-dsupdate
+      branch: master
