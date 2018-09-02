@@ -6,6 +6,7 @@ go:
 go_import_path: arnested.dk/go/dsupdate
 
 before_install:
+  - go get github.com/robertkrimen/godocdown/godocdown
   - go get github.com/frapposelli/wwhrd
   - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
@@ -15,6 +16,7 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
+  - make doc ; git diff --quiet # Check the docs are up to date
   - dep check
   - wwhrd check
   - go test -race -coverprofile c.out ./...
