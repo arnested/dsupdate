@@ -31,3 +31,9 @@ deploy:
     on:
       repo: arnested/go-dsupdate
       branch: master
+  # Refresh goreportcard.com report
+  - provider: script
+    script: 'curl --silent -X POST -H "Content-Type: application/x-www-form-urlencoded" https://goreportcard.com/checks --data "repo=arnested.dk%2Fgo%2Fdsupdate"'
+    on:
+      repo: arnested/go-dsupdate
+      branch: master
