@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  digest = "1:463e4140189f8194f9121ca1c7fe3b8e9e9a2ab3d949b43c835c21034927dc62"
+  digest = "1:b39aee4261f1ae13fdd21a0db189e0bba0f96c0f2eba77ab278428e2d3b00052"
   name = "github.com/miekg/dns"
   packages = ["."]
   pruneopts = "UT"
-  revision = "5a2b9fab83ff0f8bfc99684bd5f43a37abe560f1"
-  version = "v1.0.8"
+  revision = "f4db2ca6edc3af0ee51bf332099cc480bcf3ef9d"
+  version = "v1.0.10"
 
 [[projects]]
   branch = "master"
@@ -33,6 +33,14 @@
   ]
   pruneopts = "UT"
   revision = "8a410e7b638dca158bf9e766925842f6651ff828"
+
+[[projects]]
+  branch = "master"
+  digest = "1:6c54cefa33de85c47075aae30f1d1a333967c405272010bb76aa943467e4cbae"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  pruneopts = "UT"
+  revision = "d47a0f3392421c5624713c9a19fe781f651f8a50"
 
 [solve-meta]
   analyzer-name = "dep"
