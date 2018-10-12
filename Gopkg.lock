@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  digest = "1:fc5013a7a6f9600051ad48b059fef4a3035e8692d1c54ffd8dccfaa8ebe0b505"
+  digest = "1:57689550840d285f2da9e85356a66e626592a8b6f1170d7f2482438e64fe82e3"
   name = "github.com/miekg/dns"
   packages = ["."]
   pruneopts = "UT"
-  revision = "ba6747e8a94115e9dc7738afb87850687611df1b"
-  version = "v1.0.12"
+  revision = "d74956db7b5b20451796774572d0f5a0222e377a"
+  version = "v1.0.13"
 
 [[projects]]
   branch = "master"
@@ -18,11 +18,11 @@
     "ed25519/internal/edwards25519",
   ]
   pruneopts = "UT"
-  revision = "5295e8364332db77d75fce11f1d19c053919a9c9"
+  revision = "7c1a557ab941a71c619514f229f0b27ccb0c27cf"
 
 [[projects]]
   branch = "master"
-  digest = "1:7679523acab7ab7d18ac9e00b46991470a212a1e3dc653027db8f331b02397a2"
+  digest = "1:40a3cfcb660b2f6354f669eb8cbea46b5a308b42f349782147301ab66fb57184"
   name = "golang.org/x/net"
   packages = [
     "bpf",
@@ -32,15 +32,15 @@
     "ipv6",
   ]
   pruneopts = "UT"
-  revision = "4dfa2610cdf3b287375bbba5b8f2a14d3b01d8de"
+  revision = "49bb7cea24b1df9410e1712aa6433dae904ff66a"
 
 [[projects]]
   branch = "master"
-  digest = "1:e2ced6fdf654069e8713c96012275fbd245381673d53e8c8ace640b28441a28b"
+  digest = "1:0a40b0bdd57a93e741d8557465be3a2edeec408e9b6399586ad65bbe8e355796"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "e4b3c5e9061176387e7cea65e4dc5853801f3fb7"
+  revision = "fa43e7bc11baaae89f3f902b2b4d832b68234844"
 
 [solve-meta]
   analyzer-name = "dep"
