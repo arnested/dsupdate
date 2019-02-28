@@ -12,7 +12,7 @@ go_import_path: arnested.dk/go/dsupdate
 before_install:
   - GO111MODULE=off go get github.com/robertkrimen/godocdown/godocdown
   - GO111MODULE=off go get github.com/frapposelli/wwhrd
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - curl -sSL https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
 
 before_script:
   - chmod +x ./cc-test-reporter
@@ -29,13 +29,13 @@ after_script:
 deploy:
   # Refresh godoc.org documentation
   - provider: script
-    script: 'curl --silent -X POST -H "Content-Type: application/x-www-form-urlencoded" https://godoc.org/-/refresh --data "path=arnested.dk%2Fgo%2Fdsupdate"'
+    script: 'curl -sSL -X POST -H "Content-Type: application/x-www-form-urlencoded" https://godoc.org/-/refresh --data "path=arnested.dk%2Fgo%2Fdsupdate"'
     on:
       repo: arnested/go-dsupdate
       branch: master
   # Refresh goreportcard.com report and cached report card badge.
   - provider: script
-    script: 'curl --silent -X POST -H "Content-Type: application/x-www-form-urlencoded" https://goreportcard.com/checks --data "repo=arnested.dk%2Fgo%2Fdsupdate"; curl -X PURGE https://camo.githubusercontent.com/72d31d7b07d65a450126fc734ada298b2fb45343/68747470733a2f2f676f7265706f7274636172642e636f6d2f62616467652f61726e65737465642e646b2f676f2f64737570646174652f'
+    script: 'curl -sSL -X POST -H "Content-Type: application/x-www-form-urlencoded" https://goreportcard.com/checks --data "repo=arnested.dk%2Fgo%2Fdsupdate"; curl -sSL -X PURGE https://camo.githubusercontent.com/72d31d7b07d65a450126fc734ada298b2fb45343/68747470733a2f2f676f7265706f7274636172642e636f6d2f62616467652f61726e65737465642e646b2f676f2f64737570646174652f'
     on:
       repo: arnested/go-dsupdate
       branch: master
