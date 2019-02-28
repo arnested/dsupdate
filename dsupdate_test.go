@@ -1,154 +1,95 @@
-package dsupdate /* import "arnested.dk/go/dsupdate" */
+package dsupdate
 
 import (
 	"testing"
-
-	"github.com/miekg/dns"
 )
 
-func TestNewDsUpdate(t *testing.T) {
-	_, err := NewDsUpdate()
+func TestNew(t *testing.T) {
+	dsu, err := New(Credentials{Domain: "example.dk", UserID: "XX1234-DK", Password: "correcthorsebatterystaple"})
 
 	if err != nil {
 		t.Error(err)
+	}
+
+	if dsu.Domain != "example.dk" {
+		t.Errorf("Could not create new with setting domain")
+	}
+
+	if dsu.UserID != "XX1234-DK" {
+		t.Errorf("Could not create new with setting user ID")
+	}
+
+	if dsu.Password != "correcthorsebatterystaple" {
+		t.Errorf("Could not create new with setting password")
 	}
 }
 
-func TestNewDsUpdateWithUserID(t *testing.T) {
-	dsu, err := NewDsUpdate(UserID("foo"))
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	if dsu.userID != "foo" {
-		t.Errorf("Could not initialize with setting user ID")
-	}
-}
-
-func TestNewDsUpdateWithPassword(t *testing.T) {
-	dsu, err := NewDsUpdate(Password("bar"))
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	if dsu.password != "bar" {
-		t.Errorf("Could not initialize with setting password")
-	}
-}
-
-func TestNewDsUpdateWithDomain(t *testing.T) {
-	dsu, err := NewDsUpdate(Domain("eksempel.dk"))
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	if dsu.domain != "eksempel.dk" {
-		t.Errorf("Could not initialize with setting domain")
-	}
-}
-
-func TestNewDsUpdateWithMultipleOptions(t *testing.T) {
-	dsu, err := NewDsUpdate(UserID("foo"), Password("bar"), Domain("eksempel.dk"))
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	if dsu.userID != "foo" {
-		t.Errorf("Could not initialize with setting user ID")
-	}
-
-	if dsu.password != "bar" {
-		t.Errorf("Could not initialize with setting password")
-	}
-
-	if dsu.domain != "eksempel.dk" {
-		t.Errorf("Could not initialize with setting domain")
-	}
-
-	// Options should be able to be specified in random order.
-	dsu2, err := NewDsUpdate(UserID("foo"), Domain("eksempel.dk"), Password("bar"))
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	if dsu2.userID != "foo" {
-		t.Errorf("Could not initialize with setting user ID")
-	}
-
-	if dsu2.password != "bar" {
-		t.Errorf("Could not initialize with setting password")
-	}
-
-	if dsu2.domain != "eksempel.dk" {
-		t.Errorf("Could not initialize with setting domain")
-	}
-}
-
-func TestNewDsUpdateWithDsRecords(t *testing.T) {
-	dsu, err := NewDsUpdate(DS(
-		dns.DS{},
-		dns.DS{},
-		dns.DS{},
-		dns.DS{},
-	))
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	if len(dsu.dsRecords) != 4 {
-		t.Errorf("Could not initialize with setting 4 DS records")
-	}
-}
-
-func TestNewDsUpdateWithDsRecordsAsSlice(t *testing.T) {
-	dsu, err := NewDsUpdate(DS([]dns.DS{
-		dns.DS{},
-		dns.DS{},
-		dns.DS{},
-		dns.DS{},
-	}...))
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	if len(dsu.dsRecords) != 4 {
-		t.Errorf("Could not initialize with setting 4 DS records")
-	}
-}
-
-func TestNewDsUpdateWithTooManyDsRecordsAsSlice(t *testing.T) {
-	_, err := NewDsUpdate(DS([]dns.DS{
-		dns.DS{},
-		dns.DS{},
-		dns.DS{},
-		dns.DS{},
-		dns.DS{},
-		dns.DS{},
-	}...))
+func TestNewWithMissingCredentials(t *testing.T) {
+	_, err := New(Credentials{})
 
 	if err == nil {
-		t.Errorf("Did not fail as expected when trying to set 6 DS records")
+		t.Error(err)
+	}
+
+	_, err = New(Credentials{UserID: "XX1234-DK", Password: "correcthorsebatterystaple"})
+
+	if err == nil {
+		t.Error(err)
+	}
+
+	_, err = New(Credentials{Domain: "example.dk", Password: "correcthorsebatterystaple"})
+
+	if err == nil {
+		t.Error(err)
+	}
+
+	_, err = New(Credentials{Domain: "example.dk", UserID: "XX1234-DK"})
+
+	if err == nil {
+		t.Error(err)
 	}
 }
 
-func TestNewDsUpdateWithTooManyDsRecords(t *testing.T) {
-	_, err := NewDsUpdate(DS(
-		dns.DS{},
-		dns.DS{},
-		dns.DS{},
-		dns.DS{},
-		dns.DS{},
-		dns.DS{},
-	))
+func TestAddDS(t *testing.T) {
+	dsu, err := New(Credentials{Domain: "example.dk", UserID: "XX1234-DK", Password: "correcthorsebatterystaple"})
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = dsu.Add(DsRecord{KeyTag: 0, Algorithm: 8, DigestType: 2, Digest: "foo"})
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = dsu.Add(DsRecord{KeyTag: 0, Algorithm: 8, DigestType: 2, Digest: "foo"})
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = dsu.Add(DsRecord{KeyTag: 0, Algorithm: 8, DigestType: 2, Digest: "foo"})
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = dsu.Add(DsRecord{KeyTag: 0, Algorithm: 8, DigestType: 2, Digest: "foo"})
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = dsu.Add(DsRecord{KeyTag: 0, Algorithm: 8, DigestType: 2, Digest: "foo"})
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	err = dsu.Add(DsRecord{KeyTag: 0, Algorithm: 8, DigestType: 2, Digest: "foo"})
 
 	if err == nil {
-		t.Errorf("Did not fail as expected when trying to set more than 5 DS records")
+		t.Error("Should have errored on adding sixth DS")
 	}
 }

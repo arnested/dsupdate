@@ -1,80 +1,72 @@
-package dsupdate /* import "arnested.dk/go/dsupdate" */
+package dsupdate
 
 import (
 	"errors"
-
-	"github.com/miekg/dns"
 )
 
+const (
+	// Production base URL for DK Hostmasters DSU service.
+	Production = "https://dsu.dk-hostmaster.dk/1.0"
+	// Sandbox base URL for DK Hostmasters DSU service.
+	Sandbox = "https://dsu-sandbox.dk-hostmaster.dk/1.0"
+)
+
+// DsRecord is a DS record
+type DsRecord struct {
+	KeyTag     uint16
+	Algorithm  uint8
+	DigestType uint8
+	Digest     string
+}
+
+// Credentials is domain, user ID and password for authenticating to DK Hostmaster.
+type Credentials struct {
+	Domain   string
+	UserID   string
+	Password string
+}
+
+// DsUpdate is the main component of the library.
 type DsUpdate struct {
-	userID    string
-	password  string
-	domain    string
-	dsRecords []dns.DS
+	Credentials
+	useSandbox bool
+	dsRecords  []DsRecord
+	baseURL    string
 }
 
-func NewDsUpdate(options ...func(*DsUpdate) error) (*DsUpdate, error) {
-	dsu := DsUpdate{}
+// New creates a new DsUpdate.
+func New(cred Credentials) (*DsUpdate, error) {
+	dsu := &DsUpdate{}
+	dsu.Credentials = cred
+	dsu.baseURL = Production
 
-	for _, option := range options {
-		err := option(&dsu)
-
-		if err != nil {
-			return nil, err
-		}
+	if dsu.Domain == "" {
+		return nil, errors.New("No Domain for DK Hostmaster")
 	}
 
-	return &dsu, nil
-}
-
-func UserID(userID string) func(*DsUpdate) error {
-	return func(dsu *DsUpdate) error {
-		return dsu.setUserID(userID)
+	if dsu.UserID == "" {
+		return nil, errors.New("No User ID for DK Hostmaster")
 	}
-}
 
-func Password(password string) func(*DsUpdate) error {
-	return func(dsu *DsUpdate) error {
-		return dsu.setPassword(password)
+	if dsu.Password == "" {
+		return nil, errors.New("No Password for DK Hostmaster")
 	}
+
+	return dsu, nil
 }
 
-func Domain(domain string) func(*DsUpdate) error {
-	return func(dsu *DsUpdate) error {
-		return dsu.setDomain(domain)
+// Add a DsRecord to the DsUpdate component.
+func (dsu *DsUpdate) Add(ds DsRecord) error {
+	if len(dsu.dsRecords) >= 5 {
+		return errors.New("Max 5 DS records")
 	}
-}
 
-func DS(dsRecords ...dns.DS) func(*DsUpdate) error {
-	return func(dsu *DsUpdate) error {
-		return dsu.setDsRecords(dsRecords)
-	}
-}
-
-func (dsu *DsUpdate) setUserID(userID string) error {
-	dsu.userID = userID
+	dsu.dsRecords = append(dsu.dsRecords, ds)
 
 	return nil
 }
 
-func (dsu *DsUpdate) setPassword(password string) error {
-	dsu.password = password
-
-	return nil
-}
-
-func (dsu *DsUpdate) setDomain(domain string) error {
-	dsu.domain = domain
-
-	return nil
-}
-
-func (dsu *DsUpdate) setDsRecords(dsRecords []dns.DS) error {
-	if len(dsRecords) > 5 {
-		return errors.New("Max 5")
-	}
-
-	dsu.dsRecords = dsRecords
-
-	return nil
+// BaseURL configures base URL to use for the DSU service
+func (dsu *DsUpdate) BaseURL(baseURL string) {
+	dsu.baseURL = baseURL
 }

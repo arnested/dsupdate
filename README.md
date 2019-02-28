@@ -8,10 +8,6 @@
 [![CLA assistant](https://cla-assistant.io/readme/badge/arnested/go-dsupdate)](https://cla-assistant.io/arnested/go-dsupdate)
 [![GoDoc](https://godoc.org/arnested.dk/go/dsupdate?status.svg)](https://godoc.org/arnested.dk/go/dsupdate)
 
-# dsupdate
---
-    import "arnested.dk/go/dsupdate"
-
 Package dsupdate is a library for updating DS records with DK Hostmasters
 proprietary DS Update protocol
 (https://github.com/DK-Hostmaster/dsu-service-specification).
@@ -28,43 +24,3 @@ try out some new techniques inspired by among others:
 
 - Vanity Go Import Paths by Andrew Brampton
 (https://blog.bramp.net/post/2017/10/02/vanity-go-import-paths/)
-
-## Usage
-
-#### func  DS
-
-```go
-func DS(dsRecords ...dns.DS) func(*DsUpdate) error
-```
-
-#### func  Domain
-
-```go
-func Domain(domain string) func(*DsUpdate) error
-```
-
-#### func  Password
-
-```go
-func Password(password string) func(*DsUpdate) error
-```
-
-#### func  UserID
-
-```go
-func UserID(userID string) func(*DsUpdate) error
-```
-
-#### type DsUpdate
-
-```go
-type DsUpdate struct {
-}
-```
-
-
-#### func  NewDsUpdate
-
-```go
-func NewDsUpdate(options ...func(*DsUpdate) error) (*DsUpdate, error)
-```
