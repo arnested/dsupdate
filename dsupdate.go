@@ -29,9 +29,8 @@ type Credentials struct {
 // DsUpdate is the main component of the library.
 type DsUpdate struct {
 	Credentials
-	useSandbox bool
-	dsRecords  []DsRecord
-	baseURL    string
+	dsRecords []DsRecord
+	baseURL   string
 }
 
 // New creates a new DsUpdate.
