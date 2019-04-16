@@ -47,7 +47,7 @@ func setup(status int, substatus int) func() {
 	})
 
 	dsu, _ = New(Credentials{Domain: "example.dk", UserID: "XY1234-DK", Password: "correcthorsebatterystaple"})
-	dsu.Add(DsRecord{KeyTag: 43930, Algorithm: 8, DigestType: 2, Digest: "E174B66853D0DE1A4E391DFAE924695EB6BF12D28E1A68BDBDB44C4F0D325EA1"})
+	_ = dsu.Add(DsRecord{KeyTag: 43930, Algorithm: 8, DigestType: 2, Digest: "E174B66853D0DE1A4E391DFAE924695EB6BF12D28E1A68BDBDB44C4F0D325EA1"})
 	dsu.BaseURL(server.URL)
 
 	return func() {

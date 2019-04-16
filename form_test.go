@@ -6,8 +6,8 @@ import (
 
 func TestForm(t *testing.T) {
 	dsu, _ := New(Credentials{Domain: "example.dk", UserID: "XX1234-DK", Password: "correcthorsebatterystaple"})
-	dsu.Add(DsRecord{KeyTag: 0, Algorithm: 8, DigestType: 2, Digest: "foo"})
-	dsu.Add(DsRecord{KeyTag: 0, Algorithm: 8, DigestType: 2, Digest: "bar"})
+	_ = dsu.Add(DsRecord{KeyTag: 0, Algorithm: 8, DigestType: 2, Digest: "foo"})
+	_ = dsu.Add(DsRecord{KeyTag: 0, Algorithm: 8, DigestType: 2, Digest: "bar"})
 
 	enc := dsu.form().Encode()
 
