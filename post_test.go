@@ -1,17 +1,17 @@
 package dsupdate
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"strconv"
 	"testing"
 )
 
 const (
-	connectionClose  = -2
-	illegalSubStatus = -1
-	noSubStatus      = 0
-	unknownSubStatus = 1
+	connectionClose            = -2
+	illegalSubStatus SubStatus = -1
+	noSubStatus      SubStatus = 0
+	unknownSubStatus SubStatus = 1
 )
 
 var (
@@ -20,7 +20,7 @@ var (
 	dsu    *DsUpdate
 )
 
-func setup(status int, substatus int) func() {
+func setup(status int, substatus SubStatus) func() {
 	mux = http.NewServeMux()
 	server = httptest.NewServer(mux)
 
@@ -28,7 +28,7 @@ func setup(status int, substatus int) func() {
 		if status == connectionClose {
 			hj, _ := w.(http.Hijacker)
 			conn, _, _ := hj.Hijack()
-			conn.Close()
+			_ = conn.Close()
 
 			return
 		}
@@ -38,9 +38,9 @@ func setup(status int, substatus int) func() {
 		switch substatus {
 		case noSubStatus:
 		case illegalSubStatus:
-			w.Header().Set("X-DSU", "foo")
+			w.Header().Set(subStatusHeader, "foo")
 		default:
-			w.Header().Set("X-DSU", strconv.Itoa(substatus))
+			w.Header().Set(subStatusHeader, fmt.Sprintf("%d", substatus))
 		}
 
 		http.Error(w, "Test server response", status)
@@ -68,7 +68,7 @@ func TestPostOK(t *testing.T) {
 }
 
 func TestPostAuthFail(t *testing.T) {
-	defer setup(http.StatusForbidden, SubStatusAuthenticationFailed)()
+	defer setup(http.StatusForbidden, AuthenticationFailed)()
 
 	client := http.Client{}
 
@@ -128,7 +128,7 @@ func TestPostConnectionError(t *testing.T) {
 }
 
 func TestPostStatus(t *testing.T) {
-	defer setup(http.StatusForbidden, SubStatusAuthorizationFailed)()
+	defer setup(http.StatusForbidden, AuthorizationFailed)()
 
 	client := http.Client{}
 
@@ -138,7 +138,7 @@ func TestPostStatus(t *testing.T) {
 		t.Errorf("Expected HTTP status %d but got: %d", http.StatusForbidden, err.Status())
 	}
 
-	if err.SubStatus() != SubStatusAuthorizationFailed {
-		t.Errorf("Expected DSU sub status %d but got: %d", SubStatusAuthorizationFailed, err.SubStatus())
+	if err.SubStatus() != int(AuthorizationFailed) {
+		t.Errorf("Expected DSU sub status %d but got: %d", AuthorizationFailed, err.SubStatus())
 	}
 }
