@@ -3,28 +3,43 @@ package dsupdate
 import (
 	"io/ioutil"
 	"net/http"
+	"strconv"
+
+	"github.com/pkg/errors"
 )
 
 // Post the DS records to DK Hostmaster.
-func (dsu *DsUpdate) Post(httpClient http.Client) ([]byte, Error) {
+func (dsu *DsUpdate) Post(httpClient http.Client) ([]byte, error) {
 	resp, err := httpClient.PostForm(dsu.baseURL, dsu.form())
 
 	if err != nil {
-		return []byte(err.Error()), dsuError{error: err}
+		return nil, errors.Wrap(err, "Error creating DS records update request")
 	}
 
-	if resp.StatusCode == http.StatusOK {
-		defer func() { _ = resp.Body.Close() }()
-		body, _ := ioutil.ReadAll(resp.Body)
+	defer func() { _ = resp.Body.Close() }()
+	body, _ := ioutil.ReadAll(resp.Body)
 
+	if resp.StatusCode == http.StatusOK {
 		return body, nil
 	}
 
 	s, ok := subStatus(resp.Header)
 
 	if ok {
-		return nil, newErrorf(resp.StatusCode, int(s), "DS Upload sub-status: %s (%d)", s, s)
+		return body, errors.WithMessage(
+			errors.WithMessagef(
+				s,
+				"%d", s,
+			),
+			"Error updating DS records (DSU substatus)",
+		)
 	}
 
-	return nil, newErrorf(resp.StatusCode, int(s), "DS Upload error: %s", resp.Status)
+	return body, errors.WithMessage(
+		errors.WithMessagef(
+			errors.New(strconv.Itoa(resp.StatusCode)),
+			resp.Status,
+		),
+		"Error updating DS records (HTTP status)",
+	)
 }

@@ -1,17 +1,19 @@
 package dsupdate
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
+
+	"github.com/pkg/errors"
 )
 
 const (
-	connectionClose            = -2
-	illegalSubStatus SubStatus = -1
-	noSubStatus      SubStatus = 0
-	unknownSubStatus SubStatus = 1
+	connectionClose                     = -2
+	noSubStatus          SubStatusError = 0
+	unparseableSubStatus SubStatusError = 1
+	illegalSubStatus     SubStatusError = 2
 )
 
 var (
@@ -20,7 +22,7 @@ var (
 	dsu    *DsUpdate
 )
 
-func setup(status int, substatus SubStatus) func() {
+func setup(status int, substatus SubStatusError) func() {
 	mux = http.NewServeMux()
 	server = httptest.NewServer(mux)
 
@@ -37,10 +39,11 @@ func setup(status int, substatus SubStatus) func() {
 
 		switch substatus {
 		case noSubStatus:
-		case illegalSubStatus:
+		case unparseableSubStatus:
 			w.Header().Set(subStatusHeader, "foo")
 		default:
-			w.Header().Set(subStatusHeader, fmt.Sprintf("%d", substatus))
+			w.Header().Set(subStatusHeader, strconv.Itoa(int(substatus)))
+
 		}
 
 		http.Error(w, "Test server response", status)
@@ -63,7 +66,7 @@ func TestPostOK(t *testing.T) {
 	_, err := dsu.Post(client)
 
 	if err != nil {
-		t.Errorf("Successful post should return OK but failed with error: %s", err)
+		t.Errorf("Successful post should return OK but failed with error: %s", errors.Cause(err))
 	}
 }
 
@@ -80,7 +83,7 @@ func TestPostAuthFail(t *testing.T) {
 }
 
 func TestPostUnknownDSUSubstatus(t *testing.T) {
-	defer setup(http.StatusForbidden, unknownSubStatus)()
+	defer setup(http.StatusForbidden, unparseableSubStatus)()
 
 	client := http.Client{}
 
@@ -127,18 +130,50 @@ func TestPostConnectionError(t *testing.T) {
 	}
 }
 
-func TestPostStatus(t *testing.T) {
-	defer setup(http.StatusForbidden, AuthorizationFailed)()
+var subStatusTests = []struct {
+	key       string
+	substatus SubStatusError
+}{
+	{"illegal substatus", illegalSubStatus},
+	{UserIDNotSpecified.String(), UserIDNotSpecified},
+	{PasswordNotSpecified.String(), PasswordNotSpecified},
+	{MissingAParameter.String(), MissingAParameter},
+	{DomainNameNotSpecified.String(), DomainNameNotSpecified},
+	{InvalidDomainName.String(), InvalidDomainName},
+	{InvalidUserID.String(), InvalidUserID},
+	{InvalidDigestAndDigestTypeCombination.String(), InvalidDigestAndDigestTypeCombination},
+	{TheContentsOfAtLeastOneParameterIsSyntacticallyWrong.String(), TheContentsOfAtLeastOneParameterIsSyntacticallyWrong},
+	{AtLeastOneDSKeyHasAnInvalidAlgorithm.String(), AtLeastOneDSKeyHasAnInvalidAlgorithm},
+	{InvalidSequenceOfSets.String(), InvalidSequenceOfSets},
+	{UnknownParameterGiven.String(), UnknownParameterGiven},
+	{UnknownUserID.String(), UnknownUserID},
+	{UnknownDomainName.String(), UnknownDomainName},
+	{AuthenticationFailed.String(), AuthenticationFailed},
+	{AuthorizationFailed.String(), AuthorizationFailed},
+	{AuthenticatingUsingThisPasswordTypeIsNotSupported.String(), AuthenticatingUsingThisPasswordTypeIsNotSupported},
+}
 
-	client := http.Client{}
+func TestPostSubStatus(t *testing.T) {
+	for _, s := range subStatusTests {
+		t.Run(s.key, func(t *testing.T) {
+			defer setup(http.StatusInternalServerError, s.substatus)()
 
-	_, err := dsu.Post(client)
+			client := http.Client{}
 
-	if err.Status() != http.StatusForbidden {
-		t.Errorf("Expected HTTP status %d but got: %d", http.StatusForbidden, err.Status())
+			_, err := dsu.Post(client)
+			if errors.Cause(err) != s.substatus {
+				t.Errorf("Expected DSU substatus '%s' but got: '%s'", s.substatus, errors.Cause(err))
+			}
+		})
 	}
+}
 
-	if err.SubStatus() != int(AuthorizationFailed) {
-		t.Errorf("Expected DSU sub status %d but got: %d", AuthorizationFailed, err.SubStatus())
+func TestPostSubStatusError(t *testing.T) {
+	for _, s := range subStatusTests {
+		t.Run(s.key, func(t *testing.T) {
+			if s.substatus.Error() != s.substatus.String() {
+				t.Errorf("Expected DSU substatus '%s' but got: '%s'", s.substatus.Error(), s.substatus.String())
+			}
+		})
 	}
 }
