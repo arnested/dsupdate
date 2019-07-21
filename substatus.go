@@ -37,5 +37,9 @@ const (
 func subStatus(h http.Header) (SubStatus, bool) {
 	s, err := strconv.Atoi(h.Get(subStatusHeader))
 
-	return SubStatus(s), (err != nil)
+	if err != nil {
+		return 0, false
+	}
+
+	return SubStatus(s), true
 }
