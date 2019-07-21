@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-//go:generate sh -c "GO111MODULE=off go run golang.org/x/tools/cmd/stringer -type=SubStatusError -linecomment"
+//go:generate stringer -type=SubStatusError -linecomment
 
 const subStatusHeader = "X-DSU"
 
