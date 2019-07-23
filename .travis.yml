@@ -11,7 +11,6 @@ env:
 go_import_path: arnested.dk/go/dsupdate
 
 before_install:
-  - GO111MODULE=off go get -u github.com/robertkrimen/godocdown/godocdown
   - GO111MODULE=off go get -u github.com/frapposelli/wwhrd
   - curl -sSL https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
 
@@ -20,7 +19,6 @@ before_script:
   - ./cc-test-reporter before-build
 
 script:
-  - make doc ; git diff --exit-code # Check the docs are up to date
   - go generate ; git diff --exit-code # Check generated code is up to date
   - go test -v -race -coverprofile=c.out -covermode=atomic ./...
   - ln c.out coverage.txt # Cover profile should be detected by both CodeClimate and CodeCov

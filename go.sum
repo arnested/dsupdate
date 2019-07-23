@@ -1,3 +1,5 @@
+github.com/jimmyfrasche/autoreadme v0.0.0-20180503232641-58e67811d607 h1:8iNxXF8oGl6VnCGlDHY0eYz4DX/B99W3HpO5z4J5TyA=
+github.com/jimmyfrasche/autoreadme v0.0.0-20180503232641-58e67811d607/go.mod h1:lS0CTSpOQsTlXWQr5CjIJxxHnkW3HhRk1YS4HIqND54=
 github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
