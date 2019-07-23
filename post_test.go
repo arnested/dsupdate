@@ -43,7 +43,6 @@ func setup(status int, substatus SubStatusError) func() {
 			w.Header().Set(subStatusHeader, "foo")
 		default:
 			w.Header().Set(subStatusHeader, strconv.Itoa(int(substatus)))
-
 		}
 
 		http.Error(w, "Test server response", status)
