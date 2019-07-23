@@ -13,7 +13,6 @@ go_import_path: arnested.dk/go/dsupdate
 before_install:
   - GO111MODULE=off go get -u github.com/robertkrimen/godocdown/godocdown
   - GO111MODULE=off go get -u github.com/frapposelli/wwhrd
-  - GO111MODULE=off go get -u golang.org/x/tools/cmd/stringer
   - curl -sSL https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
 
 before_script:
