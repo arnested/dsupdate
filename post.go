@@ -3,7 +3,6 @@ package dsupdate
 import (
 	"io/ioutil"
 	"net/http"
-	"strconv"
 
 	"github.com/pkg/errors"
 )
@@ -26,20 +25,8 @@ func (dsu *DsUpdate) Post(httpClient http.Client) ([]byte, error) {
 	s, ok := subStatus(resp.Header)
 
 	if ok {
-		return body, errors.WithMessage(
-			errors.WithMessagef(
-				s,
-				"%d", s,
-			),
-			"Error updating DS records (DSU substatus)",
-		)
+		return body, s
 	}
 
-	return body, errors.WithMessage(
-		errors.WithMessagef(
-			errors.New(strconv.Itoa(resp.StatusCode)),
-			resp.Status,
-		),
-		"Error updating DS records (HTTP status)",
-	)
+	return body, errors.New(resp.Status)
 }

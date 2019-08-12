@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"arnested.dk/go/dsupdate"
-	"github.com/pkg/errors"
 )
 
 func Example() {
@@ -32,10 +31,9 @@ func Example() {
 	resp, err := client.Post(http.Client{})
 
 	// If the update failed and a substatus was returned in the
-	// "X-DSU" header the error cause will be of the
-	// `SubStatusError` type.
-	if _, ok := errors.Cause(err).(dsupdate.SubStatusError); ok {
-		fmt.Printf("Failed with DSU substatus error: %s", err)
+	// "X-DSU" header the error be of the `SubStatus` type.
+	if _, ok := err.(dsupdate.SubStatus); ok {
+		fmt.Printf("Failed with DSU substatus error (%d): %s", err, err)
 
 		return
 	}

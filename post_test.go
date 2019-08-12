@@ -10,10 +10,10 @@ import (
 )
 
 const (
-	connectionClose                     = -2
-	noSubStatus          SubStatusError = 0
-	unparseableSubStatus SubStatusError = 1
-	illegalSubStatus     SubStatusError = 2
+	connectionClose                = -2
+	noSubStatus          SubStatus = 0
+	unparseableSubStatus SubStatus = 1
+	illegalSubStatus     SubStatus = 2
 )
 
 var (
@@ -22,7 +22,7 @@ var (
 	dsu    *DsUpdate
 )
 
-func setup(status int, substatus SubStatusError) func() {
+func setup(status int, substatus SubStatus) func() {
 	mux = http.NewServeMux()
 	server = httptest.NewServer(mux)
 
@@ -131,7 +131,7 @@ func TestPostConnectionError(t *testing.T) {
 
 var subStatusTests = []struct {
 	key       string
-	substatus SubStatusError
+	substatus SubStatus
 }{
 	{"illegal substatus", illegalSubStatus},
 	{UserIDNotSpecified.String(), UserIDNotSpecified},
