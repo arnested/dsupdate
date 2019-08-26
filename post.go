@@ -1,18 +1,38 @@
 package dsupdate
 
 import (
+	"context"
+	"errors"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/pkg/errors"
+	"net/url"
+	"strings"
 )
 
-// Post the DS records to DK Hostmaster.
-func (dsu *DsUpdate) Post(httpClient http.Client) ([]byte, error) {
-	resp, err := httpClient.PostForm(dsu.baseURL, dsu.form())
+// Update DS records.
+func (c *Client) Update(ctx context.Context, records []DsRecord) ([]byte, error) {
+	return c.do(ctx, c.form(records))
+}
+
+// Delete DS records.
+func (c *Client) Delete(ctx context.Context) ([]byte, error) {
+	return c.do(ctx, c.formDelete())
+}
+
+func (c *Client) do(ctx context.Context, form url.Values) ([]byte, error) {
+	req, err := http.NewRequest(http.MethodPost, c.BaseURL.String(), strings.NewReader(form.Encode()))
 
 	if err != nil {
-		return nil, errors.Wrap(err, "Error creating DS records update request")
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = req.WithContext(ctx)
+
+	resp, err := c.httpClient().Do(req)
+
+	if err != nil {
+		return nil, err
 	}
 
 	defer func() { _ = resp.Body.Close() }()

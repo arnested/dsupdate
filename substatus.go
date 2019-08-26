@@ -16,22 +16,22 @@ type SubStatus int16
 // DS Upload Sub-status codes.
 // See: https://github.com/DK-Hostmaster/dsu-service-specification#http-sub-status-codes
 const (
-	UserIDNotSpecified                                   SubStatus = 480 // User ID not specified
-	PasswordNotSpecified                                 SubStatus = 481 // Password not specified
-	MissingAParameter                                    SubStatus = 482 // Missing a parameter
-	DomainNameNotSpecified                               SubStatus = 483 // Domain name not specified
-	InvalidDomainName                                    SubStatus = 484 // Invalid domain name
-	InvalidUserID                                        SubStatus = 485 // Invalid user ID
-	InvalidDigestAndDigestTypeCombination                SubStatus = 486 // Invalid digest and digest type combination
-	TheContentsOfAtLeastOneParameterIsSyntacticallyWrong SubStatus = 487 // The contents of at least one parameter is syntactically wrong
-	AtLeastOneDSKeyHasAnInvalidAlgorithm                 SubStatus = 488 // At least one DS key has an invalid algorithm
-	InvalidSequenceOfSets                                SubStatus = 489 // Invalid sequence of sets
-	UnknownParameterGiven                                SubStatus = 495 // Unknown parameter given
-	UnknownUserID                                        SubStatus = 496 // Unknown user ID
-	UnknownDomainName                                    SubStatus = 497 // Unknown domain name
-	AuthenticationFailed                                 SubStatus = 531 // Authentication failed
-	AuthorizationFailed                                  SubStatus = 532 // Authorization failed
-	AuthenticatingUsingThisPasswordTypeIsNotSupported    SubStatus = 533 // Authenticating using this password type is not supported
+	UserIDNotSpecified                                   SubStatus = 480 // user ID not specified
+	PasswordNotSpecified                                 SubStatus = 481 // password not specified
+	MissingAParameter                                    SubStatus = 482 // missing a parameter
+	DomainNameNotSpecified                               SubStatus = 483 // domain name not specified
+	InvalidDomainName                                    SubStatus = 484 // invalid domain name
+	InvalidUserID                                        SubStatus = 485 // invalid user ID
+	InvalidDigestAndDigestTypeCombination                SubStatus = 486 // invalid digest and digest type combination
+	TheContentsOfAtLeastOneParameterIsSyntacticallyWrong SubStatus = 487 // the contents of at least one parameter is syntactically wrong
+	AtLeastOneDSKeyHasAnInvalidAlgorithm                 SubStatus = 488 // at least one DS key has an invalid algorithm
+	InvalidSequenceOfSets                                SubStatus = 489 // invalid sequence of sets
+	UnknownParameterGiven                                SubStatus = 495 // unknown parameter given
+	UnknownUserID                                        SubStatus = 496 // unknown user ID
+	UnknownDomainName                                    SubStatus = 497 // unknown domain name
+	AuthenticationFailed                                 SubStatus = 531 // authentication failed
+	AuthorizationFailed                                  SubStatus = 532 // authorization failed
+	AuthenticatingUsingThisPasswordTypeIsNotSupported    SubStatus = 533 // authenticating using this password type is not supported
 )
 
 func (e SubStatus) Error() string {
