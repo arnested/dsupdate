@@ -12,8 +12,8 @@ func TestForm(t *testing.T) {
 	}
 
 	records := []DsRecord{
-		DsRecord{KeyTag: 0, Algorithm: 8, DigestType: 2, Digest: "foo"},
-		DsRecord{KeyTag: 0, Algorithm: 8, DigestType: 2, Digest: "bar"},
+		{KeyTag: 0, Algorithm: 8, DigestType: 2, Digest: "foo"},
+		{KeyTag: 0, Algorithm: 8, DigestType: 2, Digest: "bar"},
 	}
 
 	enc := client.form(records).Encode()
