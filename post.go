@@ -1,30 +1,52 @@
 package dsupdate
 
 import (
+	"context"
+	"errors"
 	"io/ioutil"
 	"net/http"
+	"net/url"
+	"strings"
 )
 
-// Post the DS records to DK Hostmaster.
-func (dsu *DsUpdate) Post(httpClient http.Client) ([]byte, Error) {
-	resp, err := httpClient.PostForm(dsu.baseURL, dsu.form())
+// Update DS records.
+func (c *Client) Update(ctx context.Context, records []DsRecord) ([]byte, error) {
+	return c.do(ctx, c.form(records))
+}
+
+// Delete DS records.
+func (c *Client) Delete(ctx context.Context) ([]byte, error) {
+	return c.do(ctx, c.formDelete())
+}
+
+func (c *Client) do(ctx context.Context, form url.Values) ([]byte, error) {
+	req, err := http.NewRequest(http.MethodPost, c.BaseURL.String(), strings.NewReader(form.Encode()))
 
 	if err != nil {
-		return []byte(err.Error()), dsuError{error: err}
+		return nil, err
 	}
 
-	if resp.StatusCode == http.StatusOK {
-		defer func() { _ = resp.Body.Close() }()
-		body, _ := ioutil.ReadAll(resp.Body)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req = req.WithContext(ctx)
 
+	resp, err := c.httpClient().Do(req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() { _ = resp.Body.Close() }()
+	body, _ := ioutil.ReadAll(resp.Body)
+
+	if resp.StatusCode == http.StatusOK {
 		return body, nil
 	}
 
 	s, ok := subStatus(resp.Header)
 
 	if ok {
-		return nil, newErrorf(resp.StatusCode, int(s), "DS Upload sub-status: %s (%d)", s, s)
+		return body, s
 	}
 
-	return nil, newErrorf(resp.StatusCode, int(s), "DS Upload error: %s", resp.Status)
+	return body, errors.New(resp.Status)
 }

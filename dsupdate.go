@@ -1,15 +1,28 @@
 package dsupdate
 
 import (
-	"errors"
+	"net/http"
 )
 
+// BaseURL is the endpoint of the DS Update service.
+type BaseURL string
+
+// DK Hostmasters environments are predefined as constants.
 const (
-	// Production base URL for DK Hostmasters DSU service.
-	Production = "https://dsu.dk-hostmaster.dk/1.0"
-	// Sandbox base URL for DK Hostmasters DSU service.
-	Sandbox = "https://dsu-sandbox.dk-hostmaster.dk/1.0"
+	// Production environment of DK Hostmasters DSU service.
+	Production BaseURL = "https://dsu.dk-hostmaster.dk/1.0"
+	// Sandbox environment of DK Hostmasters DSU service.
+	Sandbox BaseURL = "https://dsu-sandbox.dk-hostmaster.dk/1.0"
 )
+
+// String gives you the endpoint as a string. If the BaseURL is not set it will give you the Production environment.
+func (baseURL BaseURL) String() string {
+	if baseURL == "" {
+		return string(Production)
+	}
+
+	return string(baseURL)
+}
 
 // DsRecord is a DS record
 type DsRecord struct {
@@ -19,53 +32,19 @@ type DsRecord struct {
 	Digest     string
 }
 
-// Credentials is domain, user ID and password for authenticating to DK Hostmaster.
-type Credentials struct {
-	Domain   string
-	UserID   string
-	Password string
+// Client for doing updates and deletions.
+type Client struct {
+	Domain     string  // .dk domain name, i.e eksempel.dk
+	UserID     string  // DK Hostmaster user ID, i.e. ABCD1234-DK
+	Password   string  // DK Hostmater password
+	BaseURL    BaseURL // DS Update service base URL. You can use constants dsupdate.Production (default) or dsupdate.Sandbox
+	HTTPClient *http.Client
 }
 
-// DsUpdate is the main component of the library.
-type DsUpdate struct {
-	Credentials
-	dsRecords []DsRecord
-	baseURL   string
-}
-
-// New creates a new DsUpdate.
-func New(cred Credentials) (*DsUpdate, error) {
-	dsu := &DsUpdate{}
-	dsu.Credentials = cred
-	dsu.baseURL = Production
-
-	if dsu.Domain == "" {
-		return nil, errors.New("No Domain for DK Hostmaster")
+func (c *Client) httpClient() *http.Client {
+	if c.HTTPClient == nil {
+		return http.DefaultClient
 	}
 
-	if dsu.UserID == "" {
-		return nil, errors.New("No User ID for DK Hostmaster")
-	}
-
-	if dsu.Password == "" {
-		return nil, errors.New("No Password for DK Hostmaster")
-	}
-
-	return dsu, nil
-}
-
-// Add a DsRecord to the DsUpdate component.
-func (dsu *DsUpdate) Add(ds DsRecord) error {
-	if len(dsu.dsRecords) >= 5 {
-		return errors.New("Max 5 DS records")
-	}
-
-	dsu.dsRecords = append(dsu.dsRecords, ds)
-
-	return nil
-}
-
-// BaseURL configures base URL to use for the DSU service
-func (dsu *DsUpdate) BaseURL(baseURL string) {
-	dsu.baseURL = baseURL
+	return c.HTTPClient
 }

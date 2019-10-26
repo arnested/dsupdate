@@ -27,9 +27,9 @@ func _() {
 }
 
 const (
-	_SubStatus_name_0 = "User ID not specifiedPassword not specifiedMissing a parameterDomain name not specifiedInvalid domain nameInvalid user IDInvalid digest and digest type combinationThe contents of at least one parameter is syntactically wrongAt least one DS key has an invalid algorithmInvalid sequence of sets"
-	_SubStatus_name_1 = "Unknown parameter givenUnknown user IDUnknown domain name"
-	_SubStatus_name_2 = "Authentication failedAuthorization failedAuthenticating using this password type is not supported"
+	_SubStatus_name_0 = "user ID not specifiedpassword not specifiedmissing a parameterdomain name not specifiedinvalid domain nameinvalid user IDinvalid digest and digest type combinationthe contents of at least one parameter is syntactically wrongat least one DS key has an invalid algorithminvalid sequence of sets"
+	_SubStatus_name_1 = "unknown parameter givenunknown user IDunknown domain name"
+	_SubStatus_name_2 = "authentication failedauthorization failedauthenticating using this password type is not supported"
 )
 
 var (
