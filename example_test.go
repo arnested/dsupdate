@@ -14,7 +14,7 @@ func Example_update() {
 	client := dsupdate.Client{
 		Domain:   "eksempel.dk", // .dk domain name
 		UserID:   "ABCD1234-DK", // DK Hostmaster user ID
-		Password: "abba4evah",   // DK Hostmater password
+		Password: "abba4evah",   // DK Hostmaster password
 		HTTPClient: &http.Client{
 			Timeout: 5 * time.Second,
 		},
@@ -23,7 +23,7 @@ func Example_update() {
 
 	// Make a slice of DS records.
 	records := []dsupdate.DsRecord{
-		dsupdate.DsRecord{
+		{
 			KeyTag:     43930,
 			Algorithm:  8, // RSA/SHA-256
 			DigestType: 2, // SHA-256
@@ -52,10 +52,9 @@ func Example_update() {
 		return
 	}
 
-	// If there was no error returned the updated
-	// succeeded. `resp` will be the body of whatever was returned
-	// from the DS Update service ("Request sent to
-	// DSU::Version_1_0 okay").
+	// If there was no error returned the update succeeded. `resp`
+	// will be the body of whatever was returned from the DS
+	// Update service ("Request sent to DSU::Version_1_0 okay").
 	fmt.Printf("Succeeded. DK Hostmaster responded with the message in the body: %s", resp)
 }
 
@@ -64,7 +63,7 @@ func Example_delete() {
 	client := dsupdate.Client{
 		Domain:     "eksempel.dk",    // .dk domain name
 		UserID:     "ABCD1234-DK",    // DK Hostmaster user ID
-		Password:   "abba4evah",      // DK Hostmater password
+		Password:   "abba4evah",      // DK Hostmaster password
 		HTTPClient: &http.Client{},   // If left out defaults to http.DefaultClient
 		BaseURL:    dsupdate.Sandbox, // If left out defaults to dsupdate.Production
 	}
@@ -91,8 +90,8 @@ func Example_delete() {
 		return
 	}
 
-	// If there was no error returned the updated
-	// succeeded. `resp` will be the body of whatever was returned
-	// from the DS Update service.
+	// If there was no error returned the delete succeeded. `resp`
+	// will be the body of whatever was returned from the DS
+	// Update service.
 	fmt.Printf("Succeeded. DK Hostmaster responded with the message in the body: %s", resp)
 }
