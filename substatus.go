@@ -34,6 +34,7 @@ const (
 	AuthenticatingUsingThisPasswordTypeIsNotSupported    SubStatus = 533 // authenticating using this password type is not supported
 )
 
+// Error describes the substatus error.
 func (e SubStatus) Error() string {
 	return e.String()
 }
