@@ -13,10 +13,6 @@ go_import_path: arnested.dk/go/dsupdate
 
 script:
   - go generate ; git diff --exit-code # Check generated code is up to date
-  - go test -v -race -cover -coverprofile=coverage.txt -covermode=atomic ./...
-
-after_script:
-  - bash <(curl -s https://codecov.io/bash)
 
 deploy:
   # Refresh godoc.org documentation

@@ -17,7 +17,13 @@ jobs:
     - name: go test
       env:
         GO111MODULE: 'on'
-      run: go test -v -race -cover -covermode=atomic ./...
+      run: go test -v -race -cover -covermode=atomic -coverprofile=coverage.txt ./...
+    - name: Upload coverage report to Codecov
+      uses: codecov/codecov-action@v1.0.3
+      env:
+        CODECOV_ENV: ${{ matrix.go-version }}
+      with:
+        token: ${{secrets.CODECOV_TOKEN}}
   license_check:
     name: License check
     if: '!github.event.deleted'
