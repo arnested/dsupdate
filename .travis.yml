@@ -11,13 +11,9 @@ env:
 
 go_import_path: arnested.dk/go/dsupdate
 
-before_install:
-  - GO111MODULE=off go get -u github.com/frapposelli/wwhrd
-
 script:
   - go generate ; git diff --exit-code # Check generated code is up to date
   - go test -v -race -cover -coverprofile=coverage.txt -covermode=atomic ./...
-  - go mod vendor && wwhrd check
 
 after_script:
   - bash <(curl -s https://codecov.io/bash)
