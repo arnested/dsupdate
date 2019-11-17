@@ -1,18 +1,9 @@
 language: go
 
-go:
-  - '1.11'
-  - '1.12'
-  - '1.13'
-
-env:
-  global:
-    - GO111MODULE=on
-
 go_import_path: arnested.dk/go/dsupdate
 
-script:
-  - go generate ; git diff --exit-code # Check generated code is up to date
+test:
+  - true
 
 deploy:
   # Refresh godoc.org documentation
