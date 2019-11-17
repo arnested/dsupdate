@@ -9,16 +9,19 @@ import (
 	"arnested.dk/go/dsupdate"
 )
 
+// This example updates the DS records of the eksempel.dk domain. The
+// update is made with at timeout of 5 second specified using a
+// http.Client configured with the timeout..
 func Example_update() {
 	// Create a client with some fake credentials.
 	client := dsupdate.Client{
-		Domain:   "eksempel.dk", // .dk domain name
-		UserID:   "ABCD1234-DK", // DK Hostmaster user ID
-		Password: "abba4evah",   // DK Hostmaster password
+		Domain:   "eksempel.dk",    // .dk domain name
+		UserID:   "ABCD1234-DK",    // DK Hostmaster user ID
+		Password: "abba4evah",      // DK Hostmaster password
+		BaseURL:  dsupdate.Sandbox, // If left out defaults to dsupdate.Production
 		HTTPClient: &http.Client{
 			Timeout: 5 * time.Second,
 		},
-		BaseURL: dsupdate.Sandbox,
 	}
 
 	// Make a slice of DS records.
@@ -58,16 +61,21 @@ func Example_update() {
 	fmt.Printf("Succeeded. DK Hostmaster responded with the message in the body: %s", resp)
 }
 
+// This example deletes existing DS records of the eksempel.dk
+// domain. The deletion is made with at timeout of 5 second specified
+// using a context with a timeout.
 func Example_delete() {
 	// Create a client with some fake credentials.
 	client := dsupdate.Client{
 		Domain:     "eksempel.dk",    // .dk domain name
 		UserID:     "ABCD1234-DK",    // DK Hostmaster user ID
 		Password:   "abba4evah",      // DK Hostmaster password
-		HTTPClient: &http.Client{},   // If left out defaults to http.DefaultClient
 		BaseURL:    dsupdate.Sandbox, // If left out defaults to dsupdate.Production
+		HTTPClient: &http.Client{},   // If left out defaults to http.DefaultClient
 	}
 
+	// We'll set a 5 second timeout in the deletion using the
+	// context package.
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 

@@ -15,7 +15,8 @@ const (
 	Sandbox BaseURL = "https://dsu-sandbox.dk-hostmaster.dk/1.0"
 )
 
-// String gives you the endpoint as a string. If the BaseURL is not set it will give you the Production environment.
+// String gives you the endpoint as a string. If the BaseURL is not
+// set (the zero value) it will give you the Production environment.
 func (baseURL BaseURL) String() string {
 	if baseURL == "" {
 		return string(Production)
