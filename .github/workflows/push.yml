@@ -5,20 +5,24 @@ jobs:
     name: Check generated code is up to date
     if: '!github.event.deleted'
     runs-on: ubuntu-latest
+    env:
+      workdir: go/src/arnested.dk/go/dsupdate
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
       with:
-        path: go/src/arnested.dk/go/dsupdate
+        path: ${{env.workdir}}
     - name: Install Go
-      uses: actions/setup-go@v1
+      uses: actions/setup-go@v2
       with:
         go-version: '1.13'
     - name: go generate
       env:
         GO111MODULE: 'on'
-        GOPATH: /home/runner/work/go-dsupdate/go
+        GOPATH: ${{ github.workspace }}/go
+      working-directory: ${{env.workdir}}
       run: go generate -x
     - name: Diff after go generate
+      working-directory: ${{env.workdir}}
       run: git diff --exit-code
   build_and_test:
     name: Build and test
@@ -26,11 +30,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: ['1.11', '1.12', '1.13']
+        go-version: ['1.13', '1.14']
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
     - name: Install Go
-      uses: actions/setup-go@v1
+      uses: actions/setup-go@v2
       with:
         go-version: ${{ matrix.go-version }}
     - name: go test
@@ -38,7 +42,7 @@ jobs:
         GO111MODULE: 'on'
       run: go test -v -race -cover -covermode=atomic -coverprofile=coverage.txt ./...
     - name: Upload coverage report to Codecov
-      uses: codecov/codecov-action@v1.0.3
+      uses: codecov/codecov-action@v1.0.7
       env:
         CODECOV_ENV: ${{ matrix.go-version }}
       with:
@@ -50,7 +54,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Install Go
-      uses: actions/setup-go@v1
+      uses: actions/setup-go@v2
       with:
         go-version: '1.13'
     - name: Install wwhrd
@@ -62,4 +66,4 @@ jobs:
         GO111MODULE: 'on'
       run: go mod vendor
     - name: wwhrd check
-      run: $(go env GOPATH)/bin/wwhrd check
+      run: wwhrd check
