@@ -1,6 +1,6 @@
 module arnested.dk/go/dsupdate
 
-go 1.11
+go 1.13
 
 require (
 	github.com/jimmyfrasche/autoreadme v0.0.0-20180503232641-58e67811d607
