@@ -109,7 +109,6 @@ func TestUpdateOK(t *testing.T) {
 	records := []dsupdate.DsRecord{}
 
 	_, err := client.Update(ctx, records)
-
 	if err != nil {
 		if err, ok := err.(net.Error); ok && err.Timeout() {
 			t.Errorf("Timeoutsss: %s", err)
@@ -129,7 +128,6 @@ func TestHTTPDefaulClient(t *testing.T) {
 	records := []dsupdate.DsRecord{}
 
 	_, err := client.Update(ctx, records)
-
 	if err != nil {
 		t.Errorf("Successful post should return OK but failed with error: %s", err)
 	}
@@ -153,6 +151,7 @@ func TestInvalidURL(t *testing.T) {
 
 func TestUpdateDSUStatuses(t *testing.T) {
 	for _, s := range subStatuses {
+		s := s
 		t.Run(s.String(), func(t *testing.T) {
 			client, teardown := setupSubStatus(s)
 			defer teardown()
