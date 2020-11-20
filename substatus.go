@@ -41,8 +41,7 @@ func (e SubStatus) Error() string {
 
 // subStatus retrieves the substatus from a HTTP header set.
 func subStatus(h http.Header) (SubStatus, bool) {
-	s, err := strconv.Atoi(h.Get(subStatusHeader))
-
+	s, err := strconv.ParseInt(h.Get(subStatusHeader), 10, 16)
 	if err != nil {
 		return 0, false
 	}
