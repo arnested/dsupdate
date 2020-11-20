@@ -44,8 +44,9 @@ jobs:
     - name: Upload coverage report to Codecov
       uses: codecov/codecov-action@v1.0.15
       env:
-        CODECOV_ENV: ${{ matrix.go-version }}
+        GO_VERSION: ${{ matrix.go-version }}
       with:
+        env_vars: GO_VERSION
         token: ${{secrets.CODECOV_TOKEN}}
   license_check:
     name: License check
