@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: ['1.13', '1.14']
+        go-version: ['1.13', '1.14', '1.15']
     steps:
     - uses: actions/checkout@v2.3.1
     - name: Install Go
@@ -43,10 +43,8 @@ jobs:
       run: go test -v -race -cover -covermode=atomic -coverprofile=coverage.txt ./...
     - name: Upload coverage report to Codecov
       uses: codecov/codecov-action@v1.0.15
-      env:
-        GO_VERSION: ${{ matrix.go-version }}
       with:
-        env_vars: GO_VERSION
+        flags: go${{ matrix.go-version }}
         token: ${{secrets.CODECOV_TOKEN}}
   license_check:
     name: License check
