@@ -25,7 +25,7 @@ func (baseURL BaseURL) String() string {
 	return string(baseURL)
 }
 
-// DsRecord is a DS record
+// DsRecord is a DS record.
 type DsRecord struct {
 	KeyTag     uint16
 	Algorithm  uint8

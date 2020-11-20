@@ -21,7 +21,6 @@ func (c *Client) Delete(ctx context.Context) ([]byte, error) {
 
 func (c *Client) do(ctx context.Context, form url.Values) ([]byte, error) {
 	req, err := http.NewRequest(http.MethodPost, c.BaseURL.String(), strings.NewReader(form.Encode()))
-
 	if err != nil {
 		return nil, err
 	}
@@ -30,12 +29,12 @@ func (c *Client) do(ctx context.Context, form url.Values) ([]byte, error) {
 	req = req.WithContext(ctx)
 
 	resp, err := c.httpClient().Do(req)
-
 	if err != nil {
 		return nil, err
 	}
 
 	defer func() { _ = resp.Body.Close() }()
+
 	body, _ := ioutil.ReadAll(resp.Body)
 
 	if resp.StatusCode == http.StatusOK {
