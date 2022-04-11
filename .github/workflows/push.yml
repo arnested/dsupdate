@@ -23,7 +23,7 @@ jobs:
       with:
         path: ${{env.workdir}}
     - name: Install Go ${{ needs.go-version.outputs.minimal }}
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
         go-version: ${{ needs.go-version.outputs.minimal }}
     - name: go generate
@@ -45,7 +45,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install Go ${{ matrix.go-version }}
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
         go-version: ${{ matrix.go-version }}
     - name: go test
@@ -63,7 +63,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install Go ${{ needs.go-version.outputs.minimal }}
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
         go-version: ${{ needs.go-version.outputs.minimal }}
     - name: Install wwhrd
