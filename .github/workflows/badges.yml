@@ -9,12 +9,6 @@ jobs:
   refresh_badges:
     runs-on: ubuntu-latest
     steps:
-    - name: Refresh godoc.org documentatino
-      run: |
-        curl -sS -X POST -H "Content-Type: application/x-www-form-urlencoded" https://godoc.org/-/refresh --data "path=arnested.dk%2Fgo%2Fdsupdate"
-    - name: Refresh goreportcard.com report and cached report card badge
-      run: |
-        curl -sSL -X POST -H "Content-Type: application/x-www-form-urlencoded" https://goreportcard.com/checks --data "repo=arnested.dk%2Fgo%2Fdsupdate"
     - name: Purge badges from GitHub cache
       run: |
         for u in $(curl --silent https://github.com/arnested/go-dsupdate | grep https://camo.githubusercontent.com/ | sed -E 's|.*"(https://camo\.githubusercontent\.com/[^"]+)".*|\1|'); do

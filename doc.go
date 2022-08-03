@@ -1,5 +1,4 @@
 /*
-
 Package dsupdate is a library for updating DS records with DK
 Hostmasters proprietary DS Update protocol.
 
@@ -12,8 +11,7 @@ The service and protocol is documented at
 
 This package has functionality to update or delete DS records using
 the DS Update protocol.
-
 */
-package dsupdate /* import "arnested.dk/go/dsupdate" */
+package dsupdate
 
 //go:generate go run github.com/jimmyfrasche/autoreadme -f

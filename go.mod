@@ -1,8 +1,9 @@
 module arnested.dk/go/dsupdate
 
-go 1.13
+go 1.16
 
 require (
-	github.com/jimmyfrasche/autoreadme v0.0.0-20180503232641-58e67811d607
-	golang.org/x/tools v0.0.0-20191026034945-b2104f82a97d
+	github.com/jimmyfrasche/autoreadme v0.0.0-20210809222737-8f1c593357f8
+	golang.org/x/sys v0.0.0-20220731174439-a90be440212d // indirect
+	golang.org/x/tools v0.1.12
 )
