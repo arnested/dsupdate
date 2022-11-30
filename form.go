@@ -11,17 +11,17 @@ func (c *Client) form(records []DsRecord) url.Values {
 	form.Set("userid", c.UserID)
 	form.Set("password", c.Password)
 
-	for i, ds := range records {
+	for i, dsRecord := range records {
 		delta := i + 1
 		keytag := "keytag" + strconv.Itoa(delta)
 		algorithm := "algorithm" + strconv.Itoa(delta)
 		digestType := "digest_type" + strconv.Itoa(delta)
 		digest := "digest" + strconv.Itoa(delta)
 
-		form.Set(keytag, strconv.Itoa(int(ds.KeyTag)))
-		form.Set(algorithm, strconv.Itoa(int(ds.Algorithm)))
-		form.Set(digestType, strconv.Itoa(int(ds.DigestType)))
-		form.Set(digest, ds.Digest)
+		form.Set(keytag, strconv.Itoa(int(dsRecord.KeyTag)))
+		form.Set(algorithm, strconv.Itoa(int(dsRecord.Algorithm)))
+		form.Set(digestType, strconv.Itoa(int(dsRecord.DigestType)))
+		form.Set(digest, dsRecord.Digest)
 	}
 
 	return form

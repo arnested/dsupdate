@@ -7,12 +7,13 @@ import (
 )
 
 func TestError(t *testing.T) {
+	t.Parallel()
+
 	s := dsupdate.SubStatus(480)
 
-	actual := s.Error()
 	expected := "user ID not specified"
 
-	if expected != actual {
+	if actual := s.Error(); expected != actual {
 		t.Errorf("Expected %q. Got %q.", expected, actual)
 	}
 }

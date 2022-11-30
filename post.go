@@ -3,7 +3,8 @@ package dsupdate
 import (
 	"context"
 	"errors"
-	"io/ioutil"
+	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -20,22 +21,21 @@ func (c *Client) Delete(ctx context.Context) ([]byte, error) {
 }
 
 func (c *Client) do(ctx context.Context, form url.Values) ([]byte, error) {
-	req, err := http.NewRequest(http.MethodPost, c.BaseURL.String(), strings.NewReader(form.Encode()))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.BaseURL.String(), strings.NewReader(form.Encode()))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req = req.WithContext(ctx)
 
 	resp, err := c.httpClient().Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to contact API: %w", err)
 	}
 
 	defer func() { _ = resp.Body.Close() }()
 
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, _ := io.ReadAll(resp.Body)
 
 	if resp.StatusCode == http.StatusOK {
 		return body, nil
@@ -47,5 +47,6 @@ func (c *Client) do(ctx context.Context, form url.Values) ([]byte, error) {
 		return body, s
 	}
 
+	//nolint:goerr113
 	return body, errors.New(resp.Status)
 }

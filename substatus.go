@@ -15,6 +15,8 @@ type SubStatus int16
 
 // DS Upload Sub-status codes.
 // See: https://github.com/DK-Hostmaster/dsu-service-specification#http-sub-status-codes
+//
+//nolint:lll
 const (
 	UserIDNotSpecified                                   SubStatus = 480 // user ID not specified
 	PasswordNotSpecified                                 SubStatus = 481 // password not specified

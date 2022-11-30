@@ -2,6 +2,7 @@ package dsupdate_test
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"time"
@@ -12,6 +13,8 @@ import (
 // This example updates the DS records of the eksempel.dk domain. The
 // update is made with at timeout of 5 second specified using a
 // http.Client configured with the timeout..
+//
+//nolint:testableexamples
 func Example_update() {
 	// Create a client with some fake credentials.
 	client := dsupdate.Client{
@@ -41,8 +44,9 @@ func Example_update() {
 
 	// If the update failed and a substatus was returned in the
 	// "X-DSU" header the error be of the `SubStatus` type.
-	if _, ok := err.(dsupdate.SubStatus); ok {
-		fmt.Printf("Failed with DSU substatus error (%d): %s", err, err)
+	var subStatusErr dsupdate.SubStatus
+	if errors.As(err, &subStatusErr) {
+		fmt.Printf("Failed with DSU substatus error (%d): %s", subStatusErr, subStatusErr)
 
 		return
 	}
@@ -64,6 +68,8 @@ func Example_update() {
 // This example deletes existing DS records of the eksempel.dk
 // domain. The deletion is made with at timeout of 5 second specified
 // using a context with a timeout.
+//
+//nolint:testableexamples
 func Example_delete() {
 	// Create a client with some fake credentials.
 	client := dsupdate.Client{
@@ -84,8 +90,9 @@ func Example_delete() {
 
 	// If the update failed and a substatus was returned in the
 	// "X-DSU" header the error be of the `SubStatus` type.
-	if _, ok := err.(dsupdate.SubStatus); ok {
-		fmt.Printf("Failed with DSU substatus error (%d): %s", err, err)
+	var subStatusErr dsupdate.SubStatus
+	if errors.As(err, &subStatusErr) {
+		fmt.Printf("Failed with DSU substatus error (%d): %s", subStatusErr, subStatusErr)
 
 		return
 	}
