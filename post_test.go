@@ -2,6 +2,7 @@ package dsupdate_test
 
 import (
 	"context"
+	"errors"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -101,7 +102,30 @@ func setupSubStatus(substatus dsupdate.SubStatus) (dsupdate.Client, func()) {
 	}
 }
 
+func setupSubStatuses() []dsupdate.SubStatus {
+	return []dsupdate.SubStatus{
+		dsupdate.UserIDNotSpecified,
+		dsupdate.PasswordNotSpecified,
+		dsupdate.MissingAParameter,
+		dsupdate.DomainNameNotSpecified,
+		dsupdate.InvalidDomainName,
+		dsupdate.InvalidUserID,
+		dsupdate.InvalidDigestAndDigestTypeCombination,
+		dsupdate.TheContentsOfAtLeastOneParameterIsSyntacticallyWrong,
+		dsupdate.AtLeastOneDSKeyHasAnInvalidAlgorithm,
+		dsupdate.InvalidSequenceOfSets,
+		dsupdate.UnknownParameterGiven,
+		dsupdate.UnknownUserID,
+		dsupdate.UnknownDomainName,
+		dsupdate.AuthenticationFailed,
+		dsupdate.AuthorizationFailed,
+		dsupdate.AuthenticatingUsingThisPasswordTypeIsNotSupported,
+	}
+}
+
 func TestUpdateOK(t *testing.T) {
+	t.Parallel()
+
 	client, teardown := setupStatusOK()
 	defer teardown()
 
@@ -110,8 +134,9 @@ func TestUpdateOK(t *testing.T) {
 
 	_, err := client.Update(ctx, records)
 	if err != nil {
-		if err, ok := err.(net.Error); ok && err.Timeout() {
-			t.Errorf("Timeoutsss: %s", err)
+		var netErr net.Error
+		if errors.As(err, &netErr) && netErr.Timeout() {
+			t.Errorf("Timeoutsss: %s", netErr)
 		} else {
 			t.Errorf("Successful post should return OK but failed with error: %s", err)
 		}
@@ -119,6 +144,8 @@ func TestUpdateOK(t *testing.T) {
 }
 
 func TestHTTPDefaulClient(t *testing.T) {
+	t.Parallel()
+
 	client, teardown := setup(http.StatusOK, noSubStatus)
 	defer teardown()
 
@@ -134,6 +161,8 @@ func TestHTTPDefaulClient(t *testing.T) {
 }
 
 func TestInvalidURL(t *testing.T) {
+	t.Parallel()
+
 	client, teardown := setup(http.StatusOK, noSubStatus)
 	defer teardown()
 
@@ -150,35 +179,40 @@ func TestInvalidURL(t *testing.T) {
 }
 
 func TestUpdateDSUStatuses(t *testing.T) {
-	for _, s := range subStatuses {
-		s := s
-		t.Run(s.String(), func(t *testing.T) {
-			client, teardown := setupSubStatus(s)
+	t.Parallel()
+
+	subStatuses := setupSubStatuses()
+	for _, subStatus := range subStatuses {
+		subStatus := subStatus
+		t.Run(subStatus.String(), func(t *testing.T) {
+			t.Parallel()
+
+			client, teardown := setupSubStatus(subStatus)
 			defer teardown()
 
 			ctx := context.Background()
 			records := []dsupdate.DsRecord{}
 
 			resp, err := client.Update(ctx, records)
-
-			_, ok := err.(dsupdate.SubStatus)
-
 			if err == nil {
 				t.Errorf("Expected error but got none. Got response instead: %s", resp)
 			}
 
-			if !ok {
+			var subStatusErr dsupdate.SubStatus
+			if !errors.As(err, &subStatusErr) {
 				t.Error("Expected error to be of type dsupdate.SubStatus")
 			}
 
-			if err != s {
-				t.Errorf("Expected error to be '%s', instead got: %s", s, err)
+			if !errors.Is(err, subStatus) {
+				t.Errorf("Expected error to be '%s', instead got: %s", subStatus, err)
 			}
 		})
 	}
 }
 
 func TestDelete(t *testing.T) {
+	t.Parallel()
+
 	client, teardown := setup(http.StatusForbidden, unparseableSubStatus)
 	defer teardown()
 
@@ -192,6 +226,8 @@ func TestDelete(t *testing.T) {
 }
 
 func TestUpdateIllegalDSUSubstatus(t *testing.T) {
+	t.Parallel()
+
 	client, teardown := setup(http.StatusForbidden, illegalSubStatus)
 	defer teardown()
 
@@ -200,9 +236,8 @@ func TestUpdateIllegalDSUSubstatus(t *testing.T) {
 
 	resp, err := client.Update(ctx, records)
 
-	_, ok := err.(dsupdate.SubStatus)
-
-	if !ok {
+	var subStatusErr dsupdate.SubStatus
+	if !errors.As(err, &subStatusErr) {
 		t.Error("Expected error to be of type dsupdate.SubStatus")
 	}
 
@@ -212,6 +247,8 @@ func TestUpdateIllegalDSUSubstatus(t *testing.T) {
 }
 
 func TestUpdateFailWithNoSubStatus(t *testing.T) {
+	t.Parallel()
+
 	client, teardown := setup(http.StatusInternalServerError, noSubStatus)
 	defer teardown()
 
@@ -226,6 +263,8 @@ func TestUpdateFailWithNoSubStatus(t *testing.T) {
 }
 
 func TestUpdateConnectionError(t *testing.T) {
+	t.Parallel()
+
 	client, teardown := setup(connectionClose, noSubStatus)
 	defer teardown()
 
@@ -237,23 +276,4 @@ func TestUpdateConnectionError(t *testing.T) {
 	if err == nil {
 		t.Errorf("Expected error on connection close but got response: %s", resp)
 	}
-}
-
-var subStatuses = []dsupdate.SubStatus{
-	dsupdate.UserIDNotSpecified,
-	dsupdate.PasswordNotSpecified,
-	dsupdate.MissingAParameter,
-	dsupdate.DomainNameNotSpecified,
-	dsupdate.InvalidDomainName,
-	dsupdate.InvalidUserID,
-	dsupdate.InvalidDigestAndDigestTypeCombination,
-	dsupdate.TheContentsOfAtLeastOneParameterIsSyntacticallyWrong,
-	dsupdate.AtLeastOneDSKeyHasAnInvalidAlgorithm,
-	dsupdate.InvalidSequenceOfSets,
-	dsupdate.UnknownParameterGiven,
-	dsupdate.UnknownUserID,
-	dsupdate.UnknownDomainName,
-	dsupdate.AuthenticationFailed,
-	dsupdate.AuthorizationFailed,
-	dsupdate.AuthenticatingUsingThisPasswordTypeIsNotSupported,
 }

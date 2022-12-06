@@ -27,6 +27,8 @@ jobs:
       with:
         go-version: ${{ needs.go-version.outputs.latest }}.x
         ignore-local: true
+    - name: Go version
+      run: go version
     - name: go generate
       env:
         GO111MODULE: 'on'
@@ -55,6 +57,8 @@ jobs:
       with:
         go-version: ${{ matrix.go-version }}.x
         ignore-local: true
+    - name: Go version
+      run: go version
     - name: go test
       env:
         GO111MODULE: 'on'

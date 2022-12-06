@@ -13,6 +13,8 @@ jobs:
         uses: WillAbides/setup-go-faster@v1.8.0
         with:
           go-version: ${{ steps.go-version.outputs.minimal }}
+      - name: Go version
+        run: go version
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:

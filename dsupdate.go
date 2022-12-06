@@ -34,6 +34,8 @@ type DsRecord struct {
 }
 
 // Client for doing updates and deletions.
+//
+//nolint:lll
 type Client struct {
 	Domain     string  // .dk domain name, i.e eksempel.dk
 	UserID     string  // DK Hostmaster user ID, i.e. ABCD1234-DK

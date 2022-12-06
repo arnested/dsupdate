@@ -1,5 +1,11 @@
 linters:
   enable-all: true
+  disable:
+    - errname
+    - exhaustivestruct
+    - nosnakecase
+    - exhaustruct
+    - testpackage
 
 linters-settings:
   exhaustive:
@@ -7,3 +13,7 @@ linters-settings:
     # 'default' case is present, even if all enum members aren't listed in the
     # switch
     default-signifies-exhaustive: true
+  varnamelen:
+    ignore-decls:
+      - ok bool
+      - w http.ResponseWriter

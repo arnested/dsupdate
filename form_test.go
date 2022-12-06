@@ -5,6 +5,8 @@ import (
 )
 
 func TestForm(t *testing.T) {
+	t.Parallel()
+
 	client := Client{
 		Domain:   "example.dk",
 		UserID:   "XX1234-DK",
@@ -18,6 +20,7 @@ func TestForm(t *testing.T) {
 
 	enc := client.form(records).Encode()
 
+	//nolint:lll
 	if enc != "algorithm1=8&algorithm2=8&digest1=foo&digest2=bar&digest_type1=2&digest_type2=2&domain=example.dk&keytag1=0&keytag2=0&password=correcthorsebatterystaple&userid=XX1234-DK" {
 		t.Errorf("Striong: %s", enc)
 	}
