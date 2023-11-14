@@ -28,7 +28,7 @@ jobs:
         go install golang.org/x/exp/cmd/gorelease@latest
         echo "::set-output name=next::$(gorelease | tee /dev/stderr | grep 'Suggested version:' | cut -f 2 -d : | xargs)"
     - name: Create release
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       env:
         RELEASE_TAG: ${{ steps.version.outputs.next }}
       with:
