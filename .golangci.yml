@@ -1,10 +1,11 @@
 linters:
   enable-all: true
   disable:
+    - depguard
     - errname
     - exhaustivestruct
-    - nosnakecase
     - exhaustruct
+    - nosnakecase
     - testpackage
 
 linters-settings:
