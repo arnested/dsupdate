@@ -135,7 +135,7 @@ func TestUpdateOK(t *testing.T) {
 	_, err := client.Update(ctx, records)
 	if err != nil {
 		var netErr net.Error
-		if errors.As(err, &netErr) && netErr.Timeout() {
+		if errors.As(err, &netErr) && (netErr != nil) && netErr.Timeout() {
 			t.Errorf("Timeoutsss: %s", netErr)
 		} else {
 			t.Errorf("Successful post should return OK but failed with error: %s", err)

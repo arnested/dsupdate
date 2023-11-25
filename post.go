@@ -29,7 +29,7 @@ func (c *Client) do(ctx context.Context, form url.Values) ([]byte, error) {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	resp, err := c.httpClient().Do(req)
-	if err != nil {
+	if (err != nil) || (resp == nil) {
 		return nil, fmt.Errorf("failed to contact API: %w", err)
 	}
 
