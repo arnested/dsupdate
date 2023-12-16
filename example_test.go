@@ -19,8 +19,8 @@ func Example_update() {
 	// Create a client with some fake credentials.
 	client := dsupdate.Client{
 		Domain:   "eksempel.dk",    // .dk domain name
-		UserID:   "ABCD1234-DK",    // DK Hostmaster user ID
-		Password: "abba4evah",      // DK Hostmaster password
+		UserID:   "ABCD1234-DK",    // Punktum.dk user ID
+		Password: "abba4evah",      // Punktum.dk password
 		BaseURL:  dsupdate.Sandbox, // If left out defaults to dsupdate.Production
 		HTTPClient: &http.Client{
 			Timeout: 5 * time.Second,
@@ -39,7 +39,7 @@ func Example_update() {
 
 	ctx := context.Background()
 
-	// Post the new DS record(s) to DK Hostmaster.
+	// Post the new DS record(s) to Punktum.dk.
 	resp, err := client.Update(ctx, records)
 
 	// If the update failed and a substatus was returned in the
@@ -62,7 +62,7 @@ func Example_update() {
 	// If there was no error returned the update succeeded. `resp`
 	// will be the body of whatever was returned from the DS
 	// Update service ("Request sent to DSU::Version_1_0 okay").
-	fmt.Printf("Succeeded. DK Hostmaster responded with the message in the body: %s", resp)
+	fmt.Printf("Succeeded. Punktum.dk responded with the message in the body: %s", resp)
 }
 
 // This example deletes existing DS records of the eksempel.dk
@@ -74,8 +74,8 @@ func Example_delete() {
 	// Create a client with some fake credentials.
 	client := dsupdate.Client{
 		Domain:     "eksempel.dk",    // .dk domain name
-		UserID:     "ABCD1234-DK",    // DK Hostmaster user ID
-		Password:   "abba4evah",      // DK Hostmaster password
+		UserID:     "ABCD1234-DK",    // Punktum.dk user ID
+		Password:   "abba4evah",      // Punktum.dk password
 		BaseURL:    dsupdate.Sandbox, // If left out defaults to dsupdate.Production
 		HTTPClient: &http.Client{},   // If left out defaults to http.DefaultClient
 	}
@@ -85,7 +85,7 @@ func Example_delete() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	// Delete the DS record(s) to DK Hostmaster.
+	// Delete the DS record(s) to Punktum.dk.
 	resp, err := client.Delete(ctx)
 
 	// If the update failed and a substatus was returned in the
@@ -108,5 +108,5 @@ func Example_delete() {
 	// If there was no error returned the delete succeeded. `resp`
 	// will be the body of whatever was returned from the DS
 	// Update service.
-	fmt.Printf("Succeeded. DK Hostmaster responded with the message in the body: %s", resp)
+	fmt.Printf("Succeeded. Punktum.dk responded with the message in the body: %s", resp)
 }

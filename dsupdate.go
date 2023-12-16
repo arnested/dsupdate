@@ -7,11 +7,11 @@ import (
 // BaseURL is the endpoint of the DS Update service.
 type BaseURL string
 
-// DK Hostmasters environments are predefined as constants.
+// Punktum.dk's environments are predefined as constants.
 const (
-	// Production environment of DK Hostmasters DSU service.
+	// Production environment of Punktum.dk's DSU service.
 	Production BaseURL = "https://dsu.dk-hostmaster.dk/1.0"
-	// Sandbox environment of DK Hostmasters DSU service.
+	// Sandbox environment of Punktum.dk's DSU service.
 	Sandbox BaseURL = "https://dsu-sandbox.dk-hostmaster.dk/1.0"
 )
 
@@ -38,8 +38,8 @@ type DsRecord struct {
 //nolint:lll
 type Client struct {
 	Domain     string  // .dk domain name, i.e eksempel.dk
-	UserID     string  // DK Hostmaster user ID, i.e. ABCD1234-DK
-	Password   string  // DK Hostmater password
+	UserID     string  // Punktum.dk user ID, i.e. ABCD1234-DK
+	Password   string  // Punktum.dk password
 	BaseURL    BaseURL // DS Update service base URL. You can use constants dsupdate.Production (default) or dsupdate.Sandbox
 	HTTPClient *http.Client
 }
