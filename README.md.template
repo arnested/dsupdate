@@ -1,4 +1,4 @@
-# Go library for updating DS records with DK Hostmasters proprietary DS Update protocol
+# Go library for updating DS records with Punktum.dk's proprietary DS Update protocol
 
 [![Codecov](https://codecov.io/gh/arnested/dsupdate/branch/main/graph/badge.svg)](https://codecov.io/gh/arnested/dsupdate)
 [![CLA assistant](https://cla-assistant.io/readme/badge/arnested/dsupdate)](https://cla-assistant.io/arnested/dsupdate)
