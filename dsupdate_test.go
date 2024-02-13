@@ -16,7 +16,7 @@ func TestDefaultBaseURL(t *testing.T) {
 
 func FuzzForm(f *testing.F) {
 	f.Fuzz(func(
-		t *testing.T,
+		_ *testing.T,
 		domain string,
 		userID string,
 		password string,

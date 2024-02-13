@@ -24,7 +24,7 @@ func setup(status int, substatus dsupdate.SubStatus) (dsupdate.Client, func()) {
 	mux := http.NewServeMux()
 	server := httptest.NewServer(mux)
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
 		if status == connectionClose {
 			hj, _ := w.(http.Hijacker)
 			conn, _, _ := hj.Hijack()
@@ -62,7 +62,7 @@ func setupStatusOK() (dsupdate.Client, func()) {
 	mux := http.NewServeMux()
 	server := httptest.NewServer(mux)
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
 		_, _ = w.Write([]byte("Request sent to DSU::Version_1_0 okay"))
 	})
@@ -83,7 +83,7 @@ func setupSubStatus(substatus dsupdate.SubStatus) (dsupdate.Client, func()) {
 	mux := http.NewServeMux()
 	server := httptest.NewServer(mux)
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
 
 		w.Header().Set("X-DSU", strconv.Itoa(int(substatus)))
