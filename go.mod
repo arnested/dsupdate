@@ -1,3 +1,4 @@
+// Deprecated: Punktum.dk has closed the DS-update Service, see https://punktum.dk/artikler/breaking-changes
 module arnested.dk/go/dsupdate
 
 go 1.18

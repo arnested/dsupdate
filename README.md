@@ -1,6 +1,9 @@
 # Go library for updating DS records with Punktum.dk's proprietary DS Update protocol
 
-[![Codecov](https://codecov.io/gh/arnested/dsupdate/branch/main/graph/badge.svg)](https://codecov.io/gh/arnested/dsupdate)
+> [!IMPORTANT]
+> Deprecated: Punktum.dk has closed the DS-update Service, see
+> <https://punktum.dk/artikler/breaking-changes>
+
 [![CLA assistant](https://cla-assistant.io/readme/badge/arnested/dsupdate)](https://cla-assistant.io/arnested/dsupdate)
 [![PkgGoDev](https://pkg.go.dev/badge/arnested.dk/go/dsupdate)](https://pkg.go.dev/arnested.dk/go/dsupdate)
 
